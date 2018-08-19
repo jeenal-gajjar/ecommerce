@@ -1,0 +1,15 @@
+venv/
+
+.env
+
+.idea/
+
+*.pyc
+
+*/db.sqlite3db.sqlite3
+
+etc/local.env
+
+__pycache__/
+
+ecommerce_app/__pycache__/
