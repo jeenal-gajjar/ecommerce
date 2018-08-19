@@ -4,3 +4,4 @@ from .middleware_classes import *
 from .templates import *
 from .databases import *
 from .django import *
+from .logging import *

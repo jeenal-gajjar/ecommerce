@@ -18,6 +18,7 @@ ENVIRON_VARIABLES = [
     'DB_PASSWORD',
     'DB_HOST',
     'DB_PORT',
+    'SLACK_SECRET_KEY',
 ]
 for env in ENVIRON_VARIABLES:
     value = os.environ[env]

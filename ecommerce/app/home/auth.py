@@ -8,6 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from ecommerce.app.user_profile.helper import create_user
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
+import logging
+from ecommerce.service.slackapi import send_registered_new_customer
+
+slack_logger = logging.getLogger('django.request')
 
 
 class SignUp(View):
@@ -27,13 +31,21 @@ class SignUp(View):
                 'url': settings.DASHBOARD_URL,
                 'message': 'Successfully Signed Up',
             }
+            send_registered_new_customer(
+                first_name=data.get('first_name', None),
+                last_name=data.get('last_name', None),
+                email=data.get('email', None)
+            )
+
         except IntegrityError as e:
             response = {
                 'status': 501,
                 'type': '-ERR',
                 'message': 'Email already exist',
             }
+
         except Exception as error:
+            slack_logger.error("Error while create User", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -71,6 +83,7 @@ class Login(View):
                 }
 
         except Exception as error:
+            slack_logger.error("Error while login User", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -82,5 +95,5 @@ class Login(View):
 class Logout(View):
 
     def get(self, request):
-       logout(request)
-       return redirect('/login/')
+        logout(request)
+        return redirect('/login/')

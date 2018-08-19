@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Product
 import json
+import logging
+
+slack_logger = logging.getLogger('django.request')
 
 
 class ProductView(View):
@@ -31,6 +34,7 @@ class ProductView(View):
                 'message': 'Successfully Product data recorded',
             }
         except Exception as error:
+            slack_logger.error("Error while Product Create", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -55,6 +59,7 @@ class ProductUpdateView(View):
                 'message': 'Successfully Product data updated',
             }
         except Exception as error:
+            slack_logger.error("Error while Product Update", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -78,6 +83,7 @@ class ProductUpdateView(View):
                     'message': 'Data not available in database',
                 }
         except Exception as error:
+            slack_logger.error("Error while Product Delete", exc_info=True)
             response = {
                         'status': 500,
                         'type': '-ERR',

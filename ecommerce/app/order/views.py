@@ -4,7 +4,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import logging
 from .models import Order, OrderItem
+
+slack_logger = logging.getLogger('django.request')
 
 
 class OrderView(View):
@@ -41,7 +44,7 @@ class OrderView(View):
                 )
                 for item in order_item
             ]
-            OrderItem.objects.bulk_create(order_item_obj)
+            OrderItem.objects.bulk_creat(order_item_obj)
 
             response = {
                 'status': 200,
@@ -50,6 +53,7 @@ class OrderView(View):
                 'order_id': order_id.id
             }
         except Exception as error:
+            slack_logger.error("Error while Order Create", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -78,6 +82,7 @@ class OrderUpdateView(View):
                 'message': 'Successfully Order Updated',
             }
         except Exception as error:
+            slack_logger.error("Error while Order Update", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
@@ -102,6 +107,7 @@ class OrderUpdateView(View):
                 }
 
         except Exception as error:
+            slack_logger.error("Error while Order Delete", exc_info=True)
             response = {
                 'status': 500,
                 'type': '-ERR',
